@@ -224,10 +224,22 @@ public class SDAL<E> implements ListInterface<E> {
 	}
 	
 	public boolean contains( E element ) {
-		return true;
+		for( int i = 0; i < elements.length; ++i ) {
+			if( element == elements[i] ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void print() {
+		for(int i = 0; i < elements.length; ++i ) {
+			if( elements[i] == null ) {
+				break;
+			}
+			
+			System.out.println( elements[i] + " ");
+		}
 	}
 	
 	public E[] contents() {	
