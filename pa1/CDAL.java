@@ -274,6 +274,30 @@ public class CDAL<E> implements ListInterface<E> {
 	}
 	
 	private void shiftArrayLeft(int position) {	
+		int arraySize = (chains.size() - 1) * chainSize;
+
+		//Get the size of the last array
+		for (int i = 0; i < chainSize; ++i) {
+			if (chains.getLast()[i] == null) {
+				arraySize += i;
+				break;
+			}
+		}
+		
+		int currentChain = 0;
+		E[] array = chains.get(currentChain);
+		
+		for (int i = position; i < arraySize; ++i) {
+			if ( chainSize - (i + 1) % chainSize == 0) {
+				++currentChain;
+				E[] newArray = chains.get(currentChain);
+				array[chainSize - (i % chainSize)] = newArray[0];
+				array = newArray;
+				continue;
+			}
+			
+			array[i] = array[i + 1];
+		}
 	}
 	
 	private void setContentsToNull(E[] array) {

@@ -131,7 +131,6 @@ class CDALTest {
 		list.push_back( 30 );
 		list.push_back( 40 );
 		list.push_back( 50 );
-		
 
 		assert( list.pop_back() == 50 );
 		assert( list.pop_back() == 40 );
@@ -139,6 +138,18 @@ class CDALTest {
 		assert( list.pop_back() == 20 );
 		assert( list.pop_back() == 10 );
 		assert( list.pop_back() == null );
+	}
+	
+	@Test
+	void pop_backLargeTest() {
+		ListInterface<Integer> list = new CDAL<Integer>();
+		for (int i = 0; i < 200; ++i) {
+			list.push_front(i);
+		}
+		
+		for (int i = 0; i < 80; ++i) {
+			assert(200-i-1 == list.pop_back());
+		}
 	}
 	
 	//Popfront test
@@ -223,6 +234,13 @@ class CDALTest {
 		assert(list.contains(20));
 		assert(list.contains(30));
 		assert(list.contains(40));
+		assert(!list.contains(50));
+	}
+	
+	@Test
+	void contentsTest() {
+		ListInterface<Integer> list = new CDAL<Integer>();
+		assert(list.contents() == null);
 	}
 	
 }
