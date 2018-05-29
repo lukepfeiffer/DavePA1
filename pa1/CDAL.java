@@ -56,9 +56,26 @@ public class CDAL<E> implements ListInterface<E> {
 	}
 	
 	public E pop_back(){
+		E[] array = chains.getLast();
+		E temp = null;
 		
-		return null;
-	}							 
+		for (int i = 0; i < 50; ++i) {
+			if (i == 49) {
+				temp = array[i];
+				array[i] = null;
+				break;
+			}
+			
+			if (array[i+1] == null) {
+				temp = array[i];
+				array[i] = null;
+				break;
+			}
+		}
+		
+		return temp;
+	}		
+	
 	public E pop_front(){
 		return null;
 	}							 
@@ -90,7 +107,7 @@ public class CDAL<E> implements ListInterface<E> {
 	}					
 	
 	public int length(){
-		return -1;
+		return size;
 	}			
 	
 	public void clear(){
