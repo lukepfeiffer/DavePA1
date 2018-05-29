@@ -49,7 +49,13 @@ public class CDAL<E> implements ListInterface<E> {
 	}
 	
 	public E replace( E element, int position ){
-		return element;
+		E[] array = chains.get(position/50);
+		E temp = null;
+		
+		temp = array[position % 50];
+		array[position % 50] = element;
+		
+		return temp;
 	}	 
 	public E remove( int position ){
 		return null;
