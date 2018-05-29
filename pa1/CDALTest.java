@@ -1,7 +1,5 @@
 package pa1;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 class CDALTest {
@@ -21,6 +19,19 @@ class CDALTest {
 		assert( array[3] == 5 );
 	}
 	
+	@Test
+	void push_frontTestLarge() {
+		ListInterface<Integer> list = new CDAL<Integer>();
+		for (int i = 0; i < 200; ++i) {
+			list.push_front(i);
+		}
+		
+	    Integer [] array =  list.contents();
+	    for (int i = 0; i < 200; ++i) {
+	    	assert(array[i] == 200 - i - 1);
+	    }
+	}
+	
 	//This test relies on contents working
 	@Test
 	void push_backTest() {
@@ -34,6 +45,20 @@ class CDALTest {
 		assert( array[1] == 10 );
 		assert( array[2] == 15 );
 		assert( array[3] == 20 );
+	}
+	
+	@Test
+	void push_backTestLarge() {
+		ListInterface<Integer> list = new CDAL<Integer>();
+
+		for (int i = 0; i < 200; ++i) {
+			list.push_back(i);
+		}
+		
+	    Integer [] array =  list.contents();
+	    for (int i = 0; i < 200; ++i) {
+	    	assert(array[i] == i);
+	    }
 	}
 	
 	//This test relies on contents working
