@@ -212,4 +212,17 @@ class CDALTest {
 		assert( list.peek_front() == 50 );
 	}
 	
+	@Test
+	void containsTest() {
+		ListInterface<Integer> list = new CDAL<Integer>();
+		list.push_back(10);
+		list.push_back(20);
+		list.push_back(30);
+		list.push_back(40);
+		assert(list.contains(10));
+		assert(list.contains(20));
+		assert(list.contains(30));
+		assert(list.contains(40));
+	}
+	
 }

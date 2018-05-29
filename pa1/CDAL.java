@@ -86,7 +86,16 @@ public class CDAL<E> implements ListInterface<E> {
 	}			
 	
 	public boolean contains( E element ){
-		return true;
+		for (int i = 0; i < chains.size(); ++i) {
+			
+			for (int k = 0; k < chains.get(i).length; ++k) {
+				if (element == chains.get(i)[k]) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}		
 	
 	public void print(){
