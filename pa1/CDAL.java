@@ -56,6 +56,7 @@ public class CDAL<E> implements ListInterface<E> {
 	}
 	
 	public E pop_back(){
+		
 		return null;
 	}							 
 	public E pop_front(){
@@ -63,25 +64,35 @@ public class CDAL<E> implements ListInterface<E> {
 	}							 
 	public E item_at( int position ){
 		return null;
-	} 				 
+	} 			
+	
 	public E peek_back(){
-		return null;
-	}							 
-	public E peek_front(){
+		E[] newArray = chains.get(size/50);
+		for (int i = 0; i < 50; ++i) {
+			if (newArray[i+1] == null) {
+				return newArray[i];
+			}
+		}
+		
 		return null;
 	}
 	
+	public E peek_front(){
+		return chains.get(0)[0];
+	}
+	
 	public boolean is_empty(){	
-		return false;
+		return chains.get(0)[0] == null;
 	}	
 	
 	public boolean is_full(){
-		return true;
+		return false;
 	}					
 	
 	public int length(){
 		return -1;
-	}							 
+	}			
+	
 	public void clear(){
 	}			
 	
