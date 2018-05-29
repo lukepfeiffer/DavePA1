@@ -5,13 +5,14 @@ import java.util.LinkedList;
 public class CDAL<E> implements ListInterface<E> {
 	public LinkedList<E[]> chains;
 	private int size;
+	private int chainSize = 50;
 	
 	public CDAL(){
 		chains = new LinkedList< E[] >();
 		size = 0;
 		
 		@SuppressWarnings("unchecked")
-		E[] newArray = (E[])new Object[50];
+		E[] newArray = (E[])new Object[chainSize];
 		setContentsToNull(newArray);
 		
 		chains.add( newArray );
@@ -29,12 +30,12 @@ public class CDAL<E> implements ListInterface<E> {
 		
 		if (chains.getLast()[49] != null) {
 			@SuppressWarnings("unchecked")
-			E[] newArray = (E[])new Object[50];
+			E[] newArray = (E[])new Object[chainSize];
 			chains.add(newArray);
 		}
 		
 		E[] tempArray = chains.getLast();
-		int position = size%50;
+		int position = size%chainSize;
 		tempArray[position] = element;
 		++size;
 	} 	   		 
@@ -49,23 +50,32 @@ public class CDAL<E> implements ListInterface<E> {
 	}
 	
 	public E replace( E element, int position ){
-		E[] array = chains.get(position/50);
+		E[] array = chains.get(position/chainSize);
 		E temp = null;
 		
-		temp = array[position % 50];
-		array[position % 50] = element;
+		temp = array[position % chainSize];
+		array[position % chainSize] = element;
 		
 		return temp;
 	}	 
+	
+	
 	public E remove( int position ){
-		return null;
+		E[] array = chains.get(position/chainSize);
+		E temp = null;
+		
+		temp = array[position % chainSize];
+		array[position % chainSize] = null;
+		
+		shiftArrayLeft(position);
+		return temp;	
 	}
 	
 	public E pop_back(){
 		E[] array = chains.getLast();
 		E temp = null;
 		
-		for (int i = 0; i < 50; ++i) {
+		for (int i = 0; i < chainSize; ++i) {
 			if (i == 49) {
 				temp = array[i];
 				array[i] = null;
@@ -83,15 +93,25 @@ public class CDAL<E> implements ListInterface<E> {
 	}		
 	
 	public E pop_front(){
-		return null;
+		E temp = chains.get(0)[0];
+		shiftArrayLeft();
+		
+		return temp;
 	}							 
 	public E item_at( int position ){
+		E[] array = chains.get(position/chainSize);
+		for (int i = 0; i < array.length; ++i) {
+			if (i == position%chainSize) {
+				return array[i];
+			}
+		}
+		
 		return null;
 	} 			
 	
 	public E peek_back(){
-		E[] newArray = chains.get(size/50);
-		for (int i = 0; i < 50; ++i) {
+		E[] newArray = chains.get(size/chainSize);
+		for (int i = 0; i < chainSize; ++i) {
 			if (newArray[i+1] == null) {
 				return newArray[i];
 			}
@@ -117,6 +137,9 @@ public class CDAL<E> implements ListInterface<E> {
 	}			
 	
 	public void clear(){
+		while (!chains.isEmpty()) {
+			chains.removeFirst();
+		}
 	}			
 	
 	public boolean contains( E element ){
@@ -146,7 +169,7 @@ public class CDAL<E> implements ListInterface<E> {
 		int lastArraySize = 0;
 		E[] lastArray = chains.getLast();
 		
-		for (int i = 0; i < 50; ++i) {
+		for (int i = 0; i < chainSize; ++i) {
 			if (lastArray[i] == null) {
 				break;
 			}
@@ -155,7 +178,7 @@ public class CDAL<E> implements ListInterface<E> {
 		}
 		
 		//Create a size for the array.
-		int size = (chains.size()-1) * 50 + lastArraySize;
+		int size = (chains.size()-1) * chainSize + lastArraySize;
 		int currentChain = 0;
 		
 		@SuppressWarnings("unchecked")
@@ -165,12 +188,12 @@ public class CDAL<E> implements ListInterface<E> {
 		
 		for (int i = 0; i < size; ++i) {
 			//If its not the first iteration and we are at the end of a chain, do these steps
-			if (i != 0 && i%50 == 0) {
+			if (i != 0 && i%chainSize == 0) {
 				++currentChain;
 				array = chains.get(currentChain);
 			}
-			//i%50 will equal the index of the current chain
-			newArray[i] = array[i%50];
+			//i%chainSize will equal the index of the current chain
+			newArray[i] = array[i%chainSize];
 		}
 
 		return newArray;
@@ -185,15 +208,15 @@ public class CDAL<E> implements ListInterface<E> {
 		E[] lastArray = chains.get(currentChain);
 
 		//Create a size for the array.
-		int newSize = (currentChain+1) * 50 + lastArraySize;
+		int newSize = (currentChain+1) * chainSize + lastArraySize;
 		
 		for (int i = newSize - 1; i >= 0; --i) {
 			//If shifting right causes the array to go out of bounds on the last chain,
 			//Create a new chain and set the first element of this new chain to
 			//The last element of the last chain
-			if (i % 50 == 49 && lastArray == chains.getLast()) {
+			if (i % chainSize == 49 && lastArray == chains.getLast()) {
 				@SuppressWarnings("unchecked")
-				E[] newArray = (E[])new Object[50];
+				E[] newArray = (E[])new Object[chainSize];
 				setContentsToNull(newArray);
 				chains.add( newArray );
 				newArray[0] = lastArray[49];
@@ -202,7 +225,7 @@ public class CDAL<E> implements ListInterface<E> {
 			
 			//If we are on the last element of the chain, set the first element in the next
 			//chain to the last element of the previous chain
-			if (i % 50 == 49) {
+			if (i % chainSize == 49) {
 				--currentChain;
 				E[] tempArray = chains.get(currentChain);
 				lastArray[0] = tempArray[49];
@@ -210,12 +233,21 @@ public class CDAL<E> implements ListInterface<E> {
 				continue;
 			}
 			
-			lastArray[i % 50 + 1] = lastArray[i % 50];
+			lastArray[i % chainSize + 1] = lastArray[i % chainSize];
 		}
 	}
 	
+	private void shiftArrayRight(int position) {
+	}
+	
+	private void shiftArrayLeft() {		
+	}
+	
+	private void shiftArrayLeft(int position) {	
+	}
+	
 	private void setContentsToNull(E[] array) {
-		for (int i = 0; i < 50; ++i) {
+		for (int i = 0; i < chainSize; ++i) {
 			array[i] = null;
 		}
 	}
